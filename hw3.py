@@ -1,18 +1,21 @@
+import random
 #import time 
 #import matplotlib
 #from matplotlib import pyplot
 
 
-def getRunningTime(func, maxN=250, repetitions=100):
+def getRunningTimeList(func, maxN=250, repetitions=100):
     times = []
 
     for n in range(1, maxN):
-        start = time.clock()
-        for rep in range(repetitions):
-            func(n)
-        end = time.clock()
-        avg = (end-start)/float(repetitions)
-        times.append(avg)
+      start = time.clock()
+      for rep in range(repetitions):
+        random_array = range(1, n)
+        random.shuffle(random_array)
+        func(random_array)
+      end = time.clock()
+      avg = (end-start)/float(repetitions)
+      times.append(avg)
 
     return times 
 
@@ -23,20 +26,33 @@ def is_sorted(list):
       return False
   return True
   
-def bubble_sort(list):
-  swaps = 0
-  done = False
-  while done == False:
-    swaps = 0
-    print "."
-    for i in range(0, len(list)-1):
-      if list[i]>list[i+1]:
-        list[i], list[i+1] = list[i + 1], list[i]
-        swaps += 1
-    if swaps == 0: done = True
-    else: swaps = 0
-  return list
+def merge(left, right):
+  result = []
+  while len(left) > 0 or len(right) > 0:
+    if len(left) > 0 and len(right) > 0:
+      if left[0] <= right[0]:
+        result.append(left[0])
+        del left[0]
+      else:
+        result.append(right[0])
+        del right[0]
+    elif len(left) > 0:
+      result.append(left[0])
+      del left[0]
+    else:
+      result.append(right[0])
+      del right[0]
+  return result
   
+def merge_sort(list):
+  l = len(list)
+  if l <= 1:
+    return list
+  m = l / 2
+  right, left = list[0:m], list[m: l]
+  left = merge_sort(left)
+  right = merge_sort(right)
+  return merge(left, right)
   
 def comb_sort(list, shrink = 1.24733095):
   gap = len(list)
